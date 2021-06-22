@@ -25,7 +25,7 @@ namespace MaeilExercise
         DataTable dt = new DataTable();
         String filePath;
         int pageNumber = 0;
-        int pageSize = 20 ;
+        int pageSize = 50;
         int maxRowId = 0;
         int numOfColumns = 0;
 
@@ -34,8 +34,6 @@ namespace MaeilExercise
         {
             InitializeComponent();
         }
-
-
 
         //#################################### Event Listeners  ###########################################
 
@@ -97,8 +95,10 @@ namespace MaeilExercise
         }
         private void btn_saveFile_Click(object sender, EventArgs e)
         {
+            saveChanges();
             saveExcelFile();
             saveLogsAsync();
+            label_error.Text = "File Saved Successfully";
         }
 
         private void btn_delete_Click(object sender, EventArgs e)
@@ -151,16 +151,13 @@ namespace MaeilExercise
                         if (!row.IsEmpty())
                         {
                             string[] rowValues = new string[numOfColumns];
-                            
-                            for (int i=1; i<numOfColumns; i++ )
-                                rowValues[i] = row.Cells(false).ElementAt(i-1).Value.ToString(); 
+                            for (int i=1; i< row.LastCellUsed().Address.ColumnNumber+1 ; i++)
+                                rowValues[i] = row.Cells(false).ElementAt(i - 1).Value.ToString();
                             
                             string pos = maxRowId.ToString();
                             rowValues[0] = pos;
                             rows.Add(pos,rowValues);
                             maxRowId++;
-                            if (maxRowId == 5000) // TODO: DELETE THIS LATER
-                                break;
                         }
                         
                     }
@@ -189,9 +186,11 @@ namespace MaeilExercise
                 {
                     if (!rows[pos].SequenceEqual(tableRow))
                     {
-                        string rowOldContent = string.Join(";", rows[pos][1..].ToArray());
-                        string rowNewContent = string.Join(";", tableRow[1..].ToArray());
-                        string log = DateTime.Now + "-  UPDATE:  " + "FROM - " + rowOldContent + " - TO " + rowNewContent;
+                        string rowOldContent = string.Join("||", rows[pos][1..].ToArray());
+                        string rowNewContent = string.Join("||", tableRow[1..].ToArray());
+                        System.Diagnostics.Debug.WriteLine("line old : " + rowOldContent);
+                        System.Diagnostics.Debug.WriteLine("line new : " + rowNewContent);
+                        string log = DateTime.Now + " -  UPDATE:  " + "FROM - " + rowOldContent + " - TO " + rowNewContent;
                         logs.Add(log);
                         rows[pos] = tableRow;
                     }
@@ -210,13 +209,12 @@ namespace MaeilExercise
                                 rowValues[x] = tableRow[x];
                             rows.Add(pos, rowValues);
                             // Add log
-                            string rowContent = string.Join(";", rowValues[1..].ToArray());
-                            string log = DateTime.Now + " -  ADD:  "  + rowValues[1..];
+                            string rowContent = string.Join("||", rowValues[1..].ToArray());
+                            string log = DateTime.Now + " -  ADD:  "  + rowContent;
                             logs.Add(log);
                             break;
                         }
-                    }
-                       
+                    } 
                 }
             }
         }
@@ -232,7 +230,7 @@ namespace MaeilExercise
                     if (rows.ContainsKey(pos))
                     {
                         // Add log
-                        string rowContent =  string.Join(";", rows[pos][1..].ToArray());
+                        string rowContent =  string.Join("||", rows[pos][1..].ToArray());
                         string log = DateTime.Now + " -  DELETE:  " + rowContent;
                         logs.Add(log);
 
@@ -246,12 +244,10 @@ namespace MaeilExercise
         {
             IEnumerable<string> xLogs =logs.Cast<string>().Select(log=>log);
 
-            StreamWriter sw = new StreamWriter(Application.StartupPath + "\\Logs\\" + filePath.Split("\\").Last());
+            StreamWriter sw = new StreamWriter(Application.StartupPath + "\\Logs\\" + "logs.txt" );
             foreach (string s in logs)
                 sw.WriteLine(s);
             sw.Close();
-            //string path = Directory.GetCurrentDirectory() + "\\LogsFile.txt";
-            //await File.WriteAllLinesAsync(path,  xLogs);
         }
 
         private void saveExcelFile()
@@ -268,18 +264,14 @@ namespace MaeilExercise
                 // Load all Map Values to the datatable
                 foreach (KeyValuePair<string, string[]> entry in rows)
                 {
-                    DataRow newRow = dt.NewRow();
+                    DataRow newRow = table.NewRow();
                     newRow.ItemArray = entry.Value[1..];
-                    dt.Rows.Add(newRow);
+                    table.Rows.Add(newRow);
                 }
 
-                
-
                 // Save Datatable in Excel File
-                var worksheet = workbook.Worksheets.Add(dt, "sheetdata");
+                var worksheet = workbook.Worksheets.Add(table, "sheetdata");
                 string path = Application.StartupPath +"\\SavedFiles\\" +  filePath.Split("\\").Last();
-                System.Diagnostics.Debug.WriteLine("Right before saving excel: " + path);
-                System.Diagnostics.Debug.WriteLine("Right before saving excel, number of rows to save : " + dt.Rows.Count);
                 workbook.SaveAs(path);
             }
         }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "UkBRol8xA8dRpwvo1QfbzNb5rhwlOvIubGqgZ7rCeXNJsfLvrAmQFLLydwQpPocAqyegJanastVonlszY5nMHg==",
+  "dgSpecHash": "9lvs+V/COi2yyu3lNhDhrSNbIOZODO7fPW4iUZnaJooJse/RZRfQUXjuIg9OzTq0COj7kEfdOV8/++/t/Z3xtQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Lenovo\\Desktop\\Maeil_estagio_exercise\\MaeilExercise\\MaeilExercise.csproj",
+  "projectFilePath": "C:\\Users\\Lenovo\\source\\repos\\MaeilExercise\\MaeilExercise.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lenovo\\.nuget\\packages\\closedxml\\0.95.4\\closedxml.0.95.4.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\documentformat.openxml\\2.7.2\\documentformat.openxml.2.7.2.nupkg.sha512",
