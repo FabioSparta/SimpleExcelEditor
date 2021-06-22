@@ -5,7 +5,7 @@
  >
  > Depending on the size of the file u may have to wait a bit of time. (126k rows ~ 1.10mins)
  >
- > When it finished loading the table will be filled with 50 rows and it is possible to navigate between pages with the buttons at the bottom (First/Previous/Next/Last)
+ > When it finishes loading the table will be filled with 50 rows and it is possible to navigate between pages with the buttons at the bottom (First/Previous/Next/Last)
 
 
  > DELETE Operation : Select a cell of the row you want to delete, then press the 'Delete rows' button 
